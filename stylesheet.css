@@ -1,28 +1,37 @@
 .color-grid {
-    spacing: 8px;
-    padding: 6px 0;
+  spacing: 8px;
+  padding: 6px 0;
 }
 
 .color-row {
-    spacing: 10px;
+  spacing: 10px;
 }
 
 .color-button {
-    min-width: 28px;
-    min-height: 28px;
+  min-width: 28px;
+  min-height: 28px;
 
-    width: 28px;
-    height: 28px;
+  width: 28px;
+  height: 28px;
 
-    border-radius: 999px;
+  border-radius: 999px;
 
-    border: 2px solid rgba(255,255,255,0.15);
+  border: 3px solid rgba(255, 255, 255, 0.15);
 }
 
 .color-button:hover {
-    border: 2px solid white;
+  border: 3px solid white;
 }
 
 .color-button:focus {
-    border: 2px solid #3584e4;
+  border: 3px solid #3584e4;
+}
+
+.color-button.selected {
+  border: 3px solid white;
+  box-shadow: 0 0 6px rgba(255, 255, 255, 0.35);
+}
+
+.color-button:hover {
+  border: 3px solid rgba(255, 255, 255, 0.7);
 }

@@ -72,7 +72,7 @@ const Indicator = GObject.registerClass(
       const COLUMNS = 4;
 
       let row = null;
-
+      this._buttons = [];
       COLORS.forEach((color, index) => {
         if (index % COLUMNS === 0) {
           row = new St.BoxLayout({
@@ -90,14 +90,22 @@ const Indicator = GObject.registerClass(
           track_hover: true,
         });
 
+        button._colorName = color.name;
+
+        this._buttons.push(button);
+
         button.set_style(`
         background-color: ${color.css};
         `);
 
+        if (color.name === this._currentColor)
+          button.add_style_class_name("selected");
+
         button.accessible_name = color.name;
 
         button.connect("clicked", () => {
-          this._currentColor = color.name;
+          this._selectColor(color.name);
+
           this._runCommand([
             "alg-rgb",
             color.name,
@@ -180,6 +188,16 @@ const Indicator = GObject.registerClass(
       } catch (e) {
         console.error(`[ALG RGB] Failed to launch command: ${e.message}`);
       }
+    }
+
+    _selectColor(colorName) {
+      this._buttons.forEach((button) => {
+        if (button._colorName === colorName)
+          button.add_style_class_name("selected");
+        else button.remove_style_class_name("selected");
+      });
+
+      this._currentColor = colorName;
     }
   },
 );
