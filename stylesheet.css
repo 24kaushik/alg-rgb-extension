@@ -1,0 +1,28 @@
+.color-grid {
+    spacing: 8px;
+    padding: 6px 0;
+}
+
+.color-row {
+    spacing: 10px;
+}
+
+.color-button {
+    min-width: 28px;
+    min-height: 28px;
+
+    width: 28px;
+    height: 28px;
+
+    border-radius: 999px;
+
+    border: 2px solid rgba(255,255,255,0.15);
+}
+
+.color-button:hover {
+    border: 2px solid white;
+}
+
+.color-button:focus {
+    border: 2px solid #3584e4;
+}

@@ -1,0 +1,7 @@
+{
+    "uuid": "alg-rgb-extension@24kaushik.vercel.app",
+    "name": "ALG RGB",
+    "description": "Control Acer ALG keyboard RGB lighting from the GNOME top panel.",
+    "shell-version": ["45", "46", "47", "48", "49", "50", "51", "52"],
+    "version": 1
+}
