@@ -1,5 +1,6 @@
 import GObject from "gi://GObject";
 import St from "gi://St";
+import Gio from "gi://Gio";
 
 import {
   Extension,
@@ -8,11 +9,15 @@ import {
 import * as Main from "resource:///org/gnome/shell/ui/main.js";
 import * as PanelMenu from "resource:///org/gnome/shell/ui/panelMenu.js";
 import * as PopupMenu from "resource:///org/gnome/shell/ui/popupMenu.js";
+import * as Slider from "resource:///org/gnome/shell/ui/slider.js";
 
 const Indicator = GObject.registerClass(
   class Indicator extends PanelMenu.Button {
     _init() {
       super._init(0.0, _("ALG RGB"));
+
+      this._currentColor = "white";
+      this._brightness = 4;
 
       console.log("[ALG RGB] Creating indicator");
 
@@ -92,10 +97,12 @@ const Indicator = GObject.registerClass(
         button.accessible_name = color.name;
 
         button.connect("clicked", () => {
-          console.log(`[ALG RGB] ${color.name}`);
-
-          // TODO:
-          // alg-rgb ${color.name}
+          this._currentColor = color.name;
+          this._runCommand([
+            "alg-rgb",
+            color.name,
+            this._brightness.toString(),
+          ]);
         });
 
         row.add_child(button);
@@ -104,6 +111,75 @@ const Indicator = GObject.registerClass(
       colorItem.add_child(container);
 
       this.menu.addMenuItem(colorItem);
+
+      this.menu.addMenuItem(new PopupMenu.PopupSeparatorMenuItem());
+
+      this._brightnessLabel = new St.Label({
+        text: `Brightness (${this._brightness})`,
+      });
+
+      const brightnessLabelItem = new PopupMenu.PopupBaseMenuItem({
+        reactive: false,
+        can_focus: false,
+      });
+
+      brightnessLabelItem.add_child(this._brightnessLabel);
+
+      this.menu.addMenuItem(brightnessLabelItem);
+
+      const sliderItem = new PopupMenu.PopupBaseMenuItem({
+        reactive: false,
+        can_focus: false,
+      });
+
+      this._slider = new Slider.Slider(1.0);
+
+      sliderItem.add_child(this._slider);
+
+      this.menu.addMenuItem(sliderItem);
+
+      this._slider.connect("notify::value", () => {
+        const brightness = Math.round(this._slider.value * 4);
+
+        if (brightness === this._brightness) return;
+
+        this._brightness = brightness;
+
+        this._brightnessLabel.text = `Brightness (${this._brightness})`;
+
+        this._runCommand([
+          "alg-rgb",
+          this._currentColor,
+          this._brightness.toString(),
+        ]);
+      });
+
+      this.menu.addMenuItem(new PopupMenu.PopupSeparatorMenuItem());
+
+      const offItem = new PopupMenu.PopupMenuItem(_("Turn Off"));
+
+      offItem.connect("activate", () => {
+        this._currentColor = "off";
+        this._runCommand(["alg-rgb", "off"]);
+      });
+
+      this.menu.addMenuItem(offItem);
+    }
+
+    _runCommand(args) {
+      try {
+        const proc = Gio.Subprocess.new(args, Gio.SubprocessFlags.NONE);
+
+        proc.wait_check_async(null, (proc, res) => {
+          try {
+            proc.wait_check_finish(res);
+          } catch (e) {
+            console.error(`[ALG RGB] ${e.message}`);
+          }
+        });
+      } catch (e) {
+        console.error(`[ALG RGB] Failed to launch command: ${e.message}`);
+      }
     }
   },
 );
