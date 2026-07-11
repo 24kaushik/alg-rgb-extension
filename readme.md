@@ -6,8 +6,8 @@ GNOME Shell extension for controlling the RGB keyboard on Acer ALG laptops using
 
 - Native top panel indicator
 - Popup menu
-- Color selection (coming soon)
-- Brightness slider (coming soon)
+- Color selection
+- Brightness slider
 
 ## Requirements
 
