@@ -19,7 +19,7 @@ This extension adds a native status indicator to GNOME Shell and uses the `alg-r
 ## Requirements
 
 - GNOME Shell 45 or newer
-- `alg-rgb` installed and available on your `PATH`
+- [`alg-rgb`](https://github.com/24kaushik/alg-cli) installed and available on your `PATH`
 - An Acer ALG laptop with RGB keyboard support
 
 ## Installation
